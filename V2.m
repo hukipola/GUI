@@ -104,6 +104,8 @@ Index = Index - 1;
 time = A(2:end,4);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 plot(time,A(2:end,Index))
+xlabel('time');
+ylabel('Temperatur in K');
 grid on 
 set(gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
 set(gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
@@ -152,6 +154,8 @@ Index = Index - 1;
 time = A(2:end,4);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 plot(time,A(2:end,Index))
+xlabel('time');
+ylabel('Druck in bara');
 grid on 
 set(gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
 set(gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
@@ -199,6 +203,8 @@ Index = Index - 1;
 time = A(2:end,4);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 plot(time,A(2:end,Index))
+xlabel('time');
+ylabel('Durchfluss');
 grid on 
 set(gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
 set(gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
@@ -247,6 +253,8 @@ Index = Index - 1;
 time = A(2:end,4);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 plot(time,A(2:end,Index))
+xlabel('time');
+ylabel('Fuellstandlevel in %');
 grid on 
 set(gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
 set(gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
