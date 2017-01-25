@@ -22,7 +22,7 @@ function varargout = V2(varargin)
 
 % Edit the above text to modify the response to help V2
 
-% Last Modified by GUIDE v2.5 24-Jan-2017 12:27:18
+% Last Modified by GUIDE v2.5 25-Jan-2017 15:22:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -84,6 +84,7 @@ function PopupTemp1_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns PopupTemp1 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from PopupTemp1
+
 guidata(hObject, handles)
 % mit diesem Befehl wird der Wert aus der Auswahl ausgelesen
 contents = cellstr(get(hObject,'String'));% returns popupmenu1 contents as cell array
@@ -100,15 +101,18 @@ Index = find(strcmp(VAL, TXT));
 % Um einen zur?cksetzen, um auf die Matrix A auszurichten
 Index = Index - 1;
 
+
 %TR11_A_IN = A(2:end,Index); % Ausw?hlen der gew?nschten Variablen, die geplottet werden sollen
 time = A(2:end,4);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
-plot(time,A(2:end,Index))
+hold(handles.axes1) 
+plot(handles.axes1,time,A(2:end,Index))
+legend(VAL);
 xlabel('time');
 ylabel('Temperatur in K');
 grid on 
-set(gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
-set(gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
+set(handles.axes1,gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
+set(handles.axes1,gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
 
 
 
@@ -153,12 +157,14 @@ Index = Index - 1;
 %TR11_A_IN = A(2:end,Index); % Ausw?hlen der gew?nschten Variablen, die geplottet werden sollen
 time = A(2:end,4);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
-plot(time,A(2:end,Index))
+hold(handles.axes2) 
+plot(handles.axes2,time,A(2:end,Index))
+legend(VAL);
 xlabel('time');
 ylabel('Druck in bara');
 grid on 
-set(gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
-set(gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
+set(handles.axes2,gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
+set(handles.axes2,gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
 
 
 
@@ -203,6 +209,7 @@ Index = Index - 1;
 time = A(2:end,4);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 plot(time,A(2:end,Index))
+legend(VAL);
 xlabel('time');
 ylabel('Durchfluss');
 grid on 
@@ -253,6 +260,7 @@ Index = Index - 1;
 time = A(2:end,4);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 plot(time,A(2:end,Index))
+legend(VAL);
 xlabel('time');
 ylabel('Fuellstandlevel in %');
 grid on 
@@ -285,18 +293,188 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % Die handles werden aktualisiert
 handles = guidata(hObject);
 filename = uigetfile({'*.xls'},'Open Excel Sheet'); % Festlegen des Namens
-[type,sheetname] = xlsfinfo(filename); %Abfragen der Informationen ueber das Excel File
-sheet = sheetname{2}; % Welche Bl?tter sollen eingelesen werden? Hier muss der Name des Blattes stehen und nicht die Nummer oder so.
-guidata(hObject, handles);
-[A,TXT,RAW]=xlsread(filename,sheet); % Einlesen der Daten. Numeric ist die Matrix mit den Werten, TXT ist die Matrix mit dem Header und Raw der ganze rest nochmal zusammen
-A = snip(A,nan); % Herausschneiden der nicht geschriebenen Werte
-% Es wird nur die erste Zeile benutzt
-TXT = TXT (1,:);
-% Die gelesenen Matrizen werden in die function handles geschrieben
-handles.A = A;
-handles.TXT = TXT;
-handles.RAW = RAW;
+if filename == 0
+    return
+else
+    [type,sheetname] = xlsfinfo(filename); %Abfragen der Informationen ueber das Excel File
+    sheet = sheetname{2}; % Welche Bl?tter sollen eingelesen werden? Hier muss der Name des Blattes stehen und nicht die Nummer oder so.
+    guidata(hObject, handles);
+    [A,TXT,RAW]=xlsread(filename,sheet); % Einlesen der Daten. Numeric ist die Matrix mit den Werten, TXT ist die Matrix mit dem Header und Raw der ganze rest nochmal zusammen
+    A = snip(A,nan); % Herausschneiden der nicht geschriebenen Werte
+    % Es wird nur die erste Zeile benutzt
+    TXT = TXT (1,:);
+    % Die gelesenen Matrizen werden in die function handles geschrieben
+    handles.A = A;
+    handles.TXT = TXT;
+    handles.RAW = RAW;
+end
 % ... und aktualisiert
 guidata(hObject, handles)
 
 %% Hier muss noch hin, was passiert, wenn man nix ausw?hlt.
+
+
+% --- Executes on selection change in PopUpTemp2.
+function PopUpTemp2_Callback(hObject, eventdata, handles)
+% hObject    handle to PopUpTemp2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns PopUpTemp2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from PopUpTemp2
+guidata(hObject, handles)
+% mit diesem Befehl wird der Wert aus der Auswahl ausgelesen
+contents = cellstr(get(hObject,'String'));% returns popupmenu1 contents as cell array
+value = contents{get(hObject,'Value')};
+VAL = cellstr(value);
+%
+% ?bernehmen der Daten vom Auslesen der Daten
+A = handles.A;
+TXT = handles.TXT;
+RAW = handles.RAW;
+
+% Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
+Index = find(strcmp(VAL, TXT));
+% Um einen zur?cksetzen, um auf die Matrix A auszurichten
+Index = Index - 1;
+
+%TR11_A_IN = A(2:end,Index); % Ausw?hlen der gew?nschten Variablen, die geplottet werden sollen
+time = A(2:end,4);
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+hold(handles.axes1) 
+plot(handles.axes1,time,A(2:end,Index))
+legend(VAL);
+xlabel('time');
+ylabel('Temperatur in K');
+grid on 
+set(handles.axes1,gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
+set(handles.axes1,gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
+
+
+
+% --- Executes during object creation, after setting all properties.
+function PopUpTemp2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PopUpTemp2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in PopUpDruck_2.
+function PopUpDruck_2_Callback(hObject, eventdata, handles)
+% hObject    handle to PopUpDruck_2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns PopUpDruck_2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from PopUpDruck_2
+guidata(hObject, handles)
+% mit diesem Befehl wird der Wert aus der Auswahl ausgelesen
+contents = cellstr(get(hObject,'String'));% returns popupmenu1 contents as cell array
+value = contents{get(hObject,'Value')};
+VAL = cellstr(value);
+%
+% ?bernehmen der Daten vom Auslesen der Daten
+A = handles.A;
+TXT = handles.TXT;
+RAW = handles.RAW;
+
+% Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
+Index = find(strcmp(VAL, TXT));
+% Um einen zur?cksetzen, um auf die Matrix A auszurichten
+Index = Index - 1;
+
+%TR11_A_IN = A(2:end,Index); % Ausw?hlen der gew?nschten Variablen, die geplottet werden sollen
+time = A(2:end,4);
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+hold(handles.axes2) 
+plot(handles.axes2,time,A(2:end,Index))
+legend(VAL);
+xlabel('time');
+ylabel('Temperatur in K');
+grid on 
+set(handles.axes2,gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
+set(handles.axes2,gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function PopUpDruck_2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PopUpDruck_2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in PopUpFlow2.
+function PopUpFlow2_Callback(hObject, eventdata, handles)
+% hObject    handle to PopUpFlow2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns PopUpFlow2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from PopUpFlow2
+
+
+% --- Executes during object creation, after setting all properties.
+function PopUpFlow2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PopUpFlow2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in PopUplevel2.
+function PopUplevel2_Callback(hObject, eventdata, handles)
+% hObject    handle to PopUplevel2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns PopUplevel2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from PopUplevel2
+
+
+% --- Executes during object creation, after setting all properties.
+function PopUplevel2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PopUplevel2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in clearaxes1.
+function clearaxes1_Callback(hObject, eventdata, handles)
+% hObject    handle to clearaxes1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+cla(handles.axes1)
+
+
+
+% --- Executes on button press in clearaxes2.
+function clearaxes2_Callback(hObject, eventdata, handles)
+% hObject    handle to clearaxes2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+cla(handles.axes2)
