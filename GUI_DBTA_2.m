@@ -22,7 +22,7 @@ function varargout = GUI_DBTA_2(varargin)
 
 % Edit the above text to modify the response to help GUI_DBTA_2
 
-% Last Modified by GUIDE v2.5 07-Feb-2017 12:16:19
+% Last Modified by GUIDE v2.5 07-Feb-2017 14:51:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -136,7 +136,12 @@ else
     handles = guidata(hObject);
     guidata(hObject, handles)
 end
+time = A(2:end,3);
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+
 % ... und aktualisiert
+set(handles.edit_startzeit,'String',time_string(1,:));
+set(handles.edit_endzeit,'String',time_string(end,:));
 guidata(hObject, handles)
 
 
@@ -992,3 +997,49 @@ function pushbutton_temp_plot_loeschen_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 cla(handles.axes1)
+
+
+
+function edit_startzeit_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_startzeit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_startzeit as text
+%        str2double(get(hObject,'String')) returns contents of edit_startzeit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_startzeit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_startzeit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit_endzeit_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_endzeit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_endzeit as text
+%        str2double(get(hObject,'String')) returns contents of edit_endzeit as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_endzeit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_endzeit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
