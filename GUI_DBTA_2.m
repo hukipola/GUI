@@ -22,7 +22,7 @@ function varargout = GUI_DBTA_2(varargin)
 
 % Edit the above text to modify the response to help GUI_DBTA_2
 
-% Last Modified by GUIDE v2.5 07-Feb-2017 14:51:15
+% Last Modified by GUIDE v2.5 07-Feb-2017 15:02:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -136,12 +136,33 @@ else
     handles = guidata(hObject);
     guidata(hObject, handles)
 end
+handles = guidata(hObject);
+guidata(hObject, handles)
+% Der Zeitvektor wird ausgelesen und in die handles geschrieben
 time = A(2:end,3);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+handles.time = time;
+handles.time_string = time_string;
 
 % ... und aktualisiert
 set(handles.edit_startzeit,'String',time_string(1,:));
 set(handles.edit_endzeit,'String',time_string(end,:));
+
+
+% ab hier werden die Werte auf die Slider übertragen
+sliderMin = time(1);
+sliderMax = time(end); % this is variable
+sliderStep = [1, 1] / (sliderMax - sliderMin);
+
+% set(handles.slider_startzeit, 'Min', sliderMin);
+% set(handles.slider_startzeit, 'Max', sliderMax);
+% set(handles.slider_startzeit, 'SliderStep', sliderStep);
+% set(handles.slider_startzeit, 'Value', sliderMin);
+% set(handles.slider_endzeit, 'Min', sliderMin);
+% set(handles.slider_endzeit, 'Max', sliderMax);
+% set(handles.slider_endzeit, 'SliderStep', sliderStep);
+% set(handles.slider_endzeit, 'Value', sliderMax);
+handles = guidata(hObject);
 guidata(hObject, handles)
 
 
@@ -1042,4 +1063,79 @@ function edit_endzeit_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on slider movement.
+function slider_startzeit_Callback(hObject, eventdata, handles)
+% hObject    handle to slider_startzeit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = guidata(hObject);
+guidata(hObject, handles)
+A = handles.A;
+time = A(2:end,3);
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+sliderMin = get(hObject, 'Min'); % correct
+sliderMax = get(hObject, 'Max'); % correct
+sliderStep = get(hObject, 'SliderStep'); % correct
+currentSliderStep = get(hObject, 'Value')*10; % correct, 1 at start+
+% disp(time_string(currentSliderStep,:))
+neuerWert = time_string(currentSliderStep,:);
+set(handles.edit_startzeit,'String',neuerWert)
+guidata(hObject, handles)
+
+
+% --- Executes during object creation, after setting all properties.
+function slider_startzeit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider_startzeit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on slider movement.
+function slider_endzeit_Callback(hObject, eventdata, handles)
+% hObject    handle to slider_endzeit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+handles = guidata(hObject);
+guidata(hObject, handles)
+A = handles.A;
+time = A(2:end,3);
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+sliderMin = get(hObject, 'Min'); % correct
+sliderMax = get(hObject, 'Max'); % correct
+sliderStep = get(hObject, 'SliderStep'); % correct
+currentSliderStep = get(hObject, 'Value')*10; % correct, 1 at start+
+% disp(time_string(currentSliderStep,:))
+neuerWert = time_string(currentSliderStep,:);
+set(handles.edit_endzeit,'String',neuerWert)
+guidata(hObject, handles)
+
+% --- Executes during object creation, after setting all properties.
+function slider_endzeit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider_endzeit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+sliderMin = get(hObject, 'Min'); % correct
+sliderMax = get(hObject, 'Max'); % correct
+sliderStep = get(hObject, 'SliderStep'); % correct
+set(hObject,'Value',sliderMax);
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
