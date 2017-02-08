@@ -1,3 +1,5 @@
+%% -- Startsequenz --> automatisch erstellt --
+
 function varargout = GUI_DBTA_2(varargin)
 % GUI_DBTA_2 MATLAB code for GUI_DBTA_2.fig
 %      GUI_DBTA_2, by itself, creates a new GUI_DBTA_2 or raises the existing
@@ -22,7 +24,7 @@ function varargout = GUI_DBTA_2(varargin)
 
 % Edit the above text to modify the response to help GUI_DBTA_2
 
-% Last Modified by GUIDE v2.5 07-Feb-2017 15:02:11
+% Last Modified by GUIDE v2.5 07-Feb-2017 12:50:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -43,6 +45,9 @@ else
 end
 % End initialization code - DO NOT EDIT
 
+
+
+%% -- Ausführung vor Start der GUI --> Den Listen wird der Startwert übergeben --
 
 % --- Executes just before GUI_DBTA_2 is made visible.
 function GUI_DBTA_2_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -83,6 +88,8 @@ function varargout = GUI_DBTA_2_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
+
+%% -- Funktion zum Datenladen --
 
 % --- Executes on button press in pushbutton_datenladen.
 function pushbutton_datenladen_Callback(hObject, eventdata, handles)
@@ -136,35 +143,20 @@ else
     handles = guidata(hObject);
     guidata(hObject, handles)
 end
-handles = guidata(hObject);
-guidata(hObject, handles)
-% Der Zeitvektor wird ausgelesen und in die handles geschrieben
 time = A(2:end,3);
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
-handles.time = time;
-handles.time_string = time_string;
-
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleiche 
+set(handles.slider_startzeit,'Min',time(1))
+set(handles.slider_startzeit,'Max',time(end))
+set(handles.slider_startzeit,'Value',time(1))
+set(handles.edit_start_zeit,'String',time_string(1,:))
+set(handles.slider_endzeit,'Min',time(1))
+set(handles.slider_endzeit,'Max',time(end))
+set(handles.slider_endzeit,'Value',time(1))
 % ... und aktualisiert
-set(handles.edit_startzeit,'String',time_string(1,:));
-set(handles.edit_endzeit,'String',time_string(end,:));
-
-
-% ab hier werden die Werte auf die Slider übertragen
-sliderMin = time(1);
-sliderMax = time(end); % this is variable
-sliderStep = [1, 1] / (sliderMax - sliderMin);
-
-% set(handles.slider_startzeit, 'Min', sliderMin);
-% set(handles.slider_startzeit, 'Max', sliderMax);
-% set(handles.slider_startzeit, 'SliderStep', sliderStep);
-% set(handles.slider_startzeit, 'Value', sliderMin);
-% set(handles.slider_endzeit, 'Min', sliderMin);
-% set(handles.slider_endzeit, 'Max', sliderMax);
-% set(handles.slider_endzeit, 'SliderStep', sliderStep);
-% set(handles.slider_endzeit, 'Value', sliderMax);
-handles = guidata(hObject);
 guidata(hObject, handles)
 
+
+%% Hier wird Drop-Down-Menü verwaltet --> Übernahme der Vektoren in die Listen + temporäres Plotten der Vektoren in Vorschau 
 
 % --- Executes on selection change in popupmenu_vektorauswahl.
 function popupmenu_vektorauswahl_Callback(hObject, eventdata, handles)
@@ -203,7 +195,7 @@ A = handles.A;
 TXT = handles.TXT;
 RAW = handles.RAW;
 Index = find(strcmp(VAL, TXT));
-% Um einen zur?cksetzen, um auf die Matrix A auszurichten
+% Um zwei zur?cksetzen, um auf die Matrix A auszurichten
 Index = Index - 2;
 
 time = A(2:end,3);
@@ -213,7 +205,7 @@ hold on;
 plot(handles.axes1,time,A(2:end,Index))
 legend(VAL);
 xlabel('time');
-ylabel('Temperatur in K');
+ylabel('Temperatur in °C');
 grid on 
 % Setzen der Plotvariable auf 'T'
 handles.peins = 0;
@@ -430,6 +422,8 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+
+%% -- Aktivierung der Listen --
 
 % --- Executes on button press in pushbutton_aktivieren1.
 function pushbutton_aktivieren1_Callback(hObject, eventdata, handles)
@@ -706,13 +700,13 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+%% -- Zum Löschen der getroffenen Auswahl einer Liste --
 
 % --- Executes on button press in pushbutton_loeschen1.
 function pushbutton_loeschen1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_loeschen1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 
 
 %----- Von hier an eigener Code -----
@@ -725,7 +719,6 @@ function pushbutton_loeschen2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_loeschen2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 
 
 %----- Von hier an eigener Code -----
@@ -741,9 +734,6 @@ function pushbutton_loeschen3_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-
-
-
 %----- Von hier an eigener Code -----
 
 set(handles.listbox_ausgewaehltevektoren3,'String',[]);
@@ -754,7 +744,6 @@ function pushbutton_loeschen4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_loeschen4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 
 
 %----- Von hier an eigener Code -----
@@ -769,7 +758,6 @@ function pushbutton_loeschen5_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-
 %----- Von hier an eigener Code -----
 
 set(handles.listbox_ausgewaehltevektoren5,'String',[]);
@@ -782,11 +770,11 @@ function pushbutton_loeschen6_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-
 %----- Von hier an eigener Code -----
 
 set(handles.listbox_ausgewaehltevektoren6,'String',[]);
 
+%% -- Funktion zum Plotten der gesamten Auswahl einer Liste in externe Figure --
 
 % --- Executes on button press in pushbutton_plotten.
 function pushbutton_plotten_Callback(hObject, eventdata, handles)
@@ -825,7 +813,7 @@ switch handles.listenzuordnung                   % Case-Unterscheidung je nachde
             hold on
           % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
             Index = find(strcmp(inhalt(z), TXT));
-        % Um einen zur?cksetzen, um auf die Matrix A auszurichten
+        % Um zwei zur?cksetzen, um auf die Matrix A auszurichten
             Index = Index - 2;
             plot(time,A(2:end,Index))
             xlabel('time');
@@ -850,7 +838,7 @@ switch handles.listenzuordnung                   % Case-Unterscheidung je nachde
             hold on
           % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
             Index = find(strcmp(inhalt(z), TXT));
-        % Um einen zur?cksetzen, um auf die Matrix A auszurichten
+        % Um zwei zur?cksetzen, um auf die Matrix A auszurichten
             Index = Index - 2;
             plot(time,A(2:end,Index))
             xlabel('time');
@@ -876,7 +864,7 @@ switch handles.listenzuordnung                   % Case-Unterscheidung je nachde
             hold on
           % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
             Index = find(strcmp(inhalt(z), TXT));
-        % Um einen zur?cksetzen, um auf die Matrix A auszurichten
+        % Um zwei zur?cksetzen, um auf die Matrix A auszurichten
             Index = Index - 2;
             plot(time,A(2:end,Index))
             xlabel('time');
@@ -903,7 +891,7 @@ switch handles.listenzuordnung                   % Case-Unterscheidung je nachde
             hold on
           % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
             Index = find(strcmp(inhalt(z), TXT));
-        % Um einen zur?cksetzen, um auf die Matrix A auszurichten
+        % Um zwei zur?cksetzen, um auf die Matrix A auszurichten
             Index = Index - 2;
             plot(time,A(2:end,Index))
             xlabel('time');
@@ -914,7 +902,8 @@ switch handles.listenzuordnung                   % Case-Unterscheidung je nachde
 
         end
         % Die Legende wird mit den Werten vom String gefüllt.
-        legend(inhalt)       
+        legend(inhalt)     
+
         
     case 5
            % Der Inhalt der Listbox wird gelesen...
@@ -929,7 +918,7 @@ switch handles.listenzuordnung                   % Case-Unterscheidung je nachde
             hold on
           % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
             Index = find(strcmp(inhalt(z), TXT));
-        % Um einen zur?cksetzen, um auf die Matrix A auszurichten
+        % Um zwei zur?cksetzen, um auf die Matrix A auszurichten
             Index = Index - 2;
             plot(time,A(2:end,Index))
             xlabel('time');
@@ -955,7 +944,7 @@ switch handles.listenzuordnung                   % Case-Unterscheidung je nachde
             hold on
           % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
             Index = find(strcmp(inhalt(z), TXT));
-        % Um einen zur?cksetzen, um auf die Matrix A auszurichten
+        % Um zwei zur?cksetzen, um auf die Matrix A auszurichten
             Index = Index - 2;
             plot(time,A(2:end,Index))
             xlabel('time');
@@ -970,47 +959,58 @@ switch handles.listenzuordnung                   % Case-Unterscheidung je nachde
         
         
 end
+set(handles.edit_start_zeit,'String',time_string(1,:));     % schreibt die Startzeit in Textfeld
+set(handles.edit_end_zeit,'String',time_string(end,:));     % schreibt die Endzeit in Textfeld
+guidata(hObject, handles)
 hold off
 
 guidata(hObject, handles)                           % Übernahme der Änderungen
 
 
-% --- If Enable == 'on', executes on mouse press in 5 pixel border.
-% --- Otherwise, executes on mouse press in 5 pixel border or over listbox_ausgewaehltevektoren1.
-function listbox_ausgewaehltevektoren1_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to listbox_ausgewaehltevektoren1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-guidata(hObject, handles)
-handles = guidata(hObject);
-% mit diesem Befehl wird der Wert aus der Auswahl ausgelesen
-contents = cellstr(get(hObject,'String'));% returns popupmenu1 contents as cell array
-value = contents{get(hObject,'Value')};
-VAL = cellstr(value);
-A = handles.A;
-TXT = handles.TXT;
-RAW = handles.RAW;
-Index = find(strcmp(VAL, TXT));
-% Um einen zur?cksetzen, um auf die Matrix A auszurichten
-Index = Index - 2;
 
-time = A(2:end,3);
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 
-hold on; 
-plot(handles.axes1,time,A(2:end,Index))
-legend(VAL);
-xlabel('time');
-ylabel('Temperatur in K');
-grid on 
-% Setzen der Plotvariable auf 'T'
-handles.peins = 0;
-guidata(hObject, handles)
-set(gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
-set(gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
+% % --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% % --- Otherwise, executes on mouse press in 5 pixel border or over listbox_ausgewaehltevektoren1.
+% function listbox_ausgewaehltevektoren1_ButtonDownFcn(hObject, eventdata, handles)
+% % hObject    handle to listbox_ausgewaehltevektoren1 (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
+% 
+% 
+% % ----- Von hier an eigener Code -----
+% guidata(hObject, handles)
+% handles = guidata(hObject);
+% % mit diesem Befehl wird der Wert aus der Auswahl ausgelesen
+% contents = cellstr(get(hObject,'String'));% returns popupmenu1 contents as cell array
+% value = contents{get(hObject,'Value')};
+% VAL = cellstr(value);
+% A = handles.A;
+% TXT = handles.TXT;
+% RAW = handles.RAW;
+% Index = find(strcmp(VAL, TXT));
+% % Um zwei zur?cksetzen, um auf die Matrix A auszurichten
+% Index = Index - 2;
+% 
+% time = A(2:end,3);
+% time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+% 
+% hold on; 
+% plot(handles.axes1,time,A(2:end,Index))
+% legend(VAL);
+% xlabel('time');
+% ylabel('Temperatur in K');
+% grid on 
+% % Setzen der Plotvariable auf 'T'
+% handles.peins = 0;
+% guidata(hObject, handles)
+% set(gca, 'XTick', [time(1);time(numel(time)/2);time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
+% set(gca, 'XTickLabel',{time_string(1,:);time_string(numel(time)/2,:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
+% 
+% %
 
-%
 
+
+%% -- Löschen der Plots aus der vorläufigen Vorschau
 
 % --- Executes on button press in pushbutton_temp_plot_loeschen.
 function pushbutton_temp_plot_loeschen_Callback(hObject, eventdata, handles)
@@ -1021,18 +1021,19 @@ cla(handles.axes1)
 
 
 
-function edit_startzeit_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_startzeit (see GCBO)
+function edit_start_zeit_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_start_zeit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit_startzeit as text
-%        str2double(get(hObject,'String')) returns contents of edit_startzeit as a double
-
+% Hints: get(hObject,'String') returns contents of edit_start_zeit as text
+%        str2double(get(hObject,'String')) returns contents of edit_start_zeit as a double
+inhalt = str2double(get(hObject,'String'));
+guidata(hObject, handles)
 
 % --- Executes during object creation, after setting all properties.
-function edit_startzeit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_startzeit (see GCBO)
+function edit_start_zeit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_start_zeit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -1044,18 +1045,19 @@ end
 
 
 
-function edit_endzeit_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_endzeit (see GCBO)
+function edit_end_zeit_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_end_zeit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit_endzeit as text
-%        str2double(get(hObject,'String')) returns contents of edit_endzeit as a double
-
+% Hints: get(hObject,'String') returns contents of edit_end_zeit as text
+%        str2double(get(hObject,'String')) returns contents of edit_end_zeit as a double
+inhalt = str2double(get(hObject,'String'));
+guidata(hObject, handles)
 
 % --- Executes during object creation, after setting all properties.
-function edit_endzeit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_endzeit (see GCBO)
+function edit_end_zeit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_end_zeit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -1065,28 +1067,23 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+
+
+%% -- Slider für Startzeitvorwahl --
 
 % --- Executes on slider movement.
 function slider_startzeit_Callback(hObject, eventdata, handles)
 % hObject    handle to slider_startzeit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles = guidata(hObject);
-guidata(hObject, handles)
-A = handles.A;
-time = A(2:end,3);
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-sliderMin = get(hObject, 'Min'); % correct
-sliderMax = get(hObject, 'Max'); % correct
-sliderStep = get(hObject, 'SliderStep'); % correct
-currentSliderStep = get(hObject, 'Value')*10; % correct, 1 at start+
-% disp(time_string(currentSliderStep,:))
-neuerWert = time_string(currentSliderStep,:);
-set(handles.edit_startzeit,'String',neuerWert)
+wert = get(hObject,'Value');
+disp(get(hObject,'Min'))
+disp(wert)
 guidata(hObject, handles)
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1101,6 +1098,8 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
 end
 
 
+%% -- Slider zur Endzeitvorwahl
+
 % --- Executes on slider movement.
 function slider_endzeit_Callback(hObject, eventdata, handles)
 % hObject    handle to slider_endzeit (see GCBO)
@@ -1109,32 +1108,14 @@ function slider_endzeit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-handles = guidata(hObject);
-guidata(hObject, handles)
-A = handles.A;
-time = A(2:end,3);
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-sliderMin = get(hObject, 'Min'); % correct
-sliderMax = get(hObject, 'Max'); % correct
-sliderStep = get(hObject, 'SliderStep'); % correct
-currentSliderStep = get(hObject, 'Value')*10; % correct, 1 at start+
-% disp(time_string(currentSliderStep,:))
-neuerWert = time_string(currentSliderStep,:);
-set(handles.edit_endzeit,'String',neuerWert)
-guidata(hObject, handles)
 
 % --- Executes during object creation, after setting all properties.
 function slider_endzeit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to slider_endzeit (see GCBO)
+% hObject    handle to slider_endzeit (see GCBO)q
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-sliderMin = get(hObject, 'Min'); % correct
-sliderMax = get(hObject, 'Max'); % correct
-sliderStep = get(hObject, 'SliderStep'); % correct
-set(hObject,'Value',sliderMax);
+
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
