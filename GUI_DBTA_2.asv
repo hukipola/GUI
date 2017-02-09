@@ -119,7 +119,7 @@ Laden_mat.logIDs = Laden_mat.logIDs(1,:);
 logIDs = Laden_mat.logIDs;
 % Der String wird gesucht, der mit dem Namen Versuchszeit 11 character
 % gemeinsam hat
-zeitposition = find(strncmpi('Versuchszeit', logIDs,8));
+zeitposition = find(strncmpi('Versuchszeit', logIDs,11));
 handles.logIDs = Laden_mat.logIDs;
 handles.logVal = Laden_mat.logVal;
 handles.time = handles.logVal(:,zeitposition);
@@ -132,7 +132,7 @@ end
    
     % Benennung des PopUpMenues:
     
-    names = handles.logIDs(1:size(logIDs,2));  % Auslesen aller Einträge ab 6. Spalte (erster Vektor nach den Zeiten!!!)
+    names = handles.logIDs(2:size(logIDs,2));  % Auslesen aller Einträge ab 6. Spalte (erster Vektor nach den Zeiten!!!)
     names{end+1} = '-Select-';  % als letzter Eintrag des Popups soll "select" stehen
     
     set(handles.popupmenu_vektorauswahl,'String',names);            % Einfügen der Vektornamen ins Popup
