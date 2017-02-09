@@ -102,28 +102,72 @@ function pushbutton_datenladen_Callback(hObject, eventdata, handles)
 
 % Die handles werden aktualisiert
 handles = guidata(hObject);
-filename = uigetfile({'*.xls'},'Open Excel Sheet'); % Festlegen des Namens
-if filename == 0
+
+%% Hier alter Einlesebefehl
+% filename = uigetfile({'*.xls'},'Open Excel Sheet'); % Festlegen des Namens
+% if filename == 0
+%     set(handles.edit_bemerkung,'String',{'Fehler: Keine Daten geladen!'});      % Ausgabe Fehlermeldung
+%     set(handles.edit_bemerkung,'BackgroundColor','red');                        % Färben des Hintergrunds bei Fehlermeldung
+%     handles = guidata(hObject);
+%     return
+% else
+%     set(handles.edit_bemerkung,'String','Keine Bemerkungen');       % Zurücksetzen des Bemerkungsfeldes, falls vorher Fehlermeldung
+%     set(handles.edit_bemerkung,'BackgroundColor','white');          % Zurücksetzen auf weißen Hintergrund
+%     
+%     [type,sheetname] = xlsfinfo(filename);      %Abfragen der Informationen ueber das Excel File
+%     sheet = sheetname{2};                       % Welche Blätter sollen eingelesen werden? Hier muss der Name des Blattes stehen und nicht die Nummer oder so.
+%     guidata(hObject, handles);              % Übernahme der Änderungen
+%     [A,TXT,RAW]=xlsread(filename,sheet);        % Einlesen der Daten. A ist die Matrix mit den Werten, TXT ist die Matrix mit dem Header und Raw der ganze rest nochmal zusammen
+%     A = snip(A,nan);                            % Herausschneiden der nicht geschriebenen Werte
+%     TXT = TXT (1,:);                            % Es wird nur die erste Zeile benutzt
+%     
+%     % Die gelesenen Matrizen werden in die function handles geschrieben
+%     handles.A = A;
+%     handles.TXT = TXT;
+%     handles.RAW = RAW;
+%     
+%     % Einfügen einer Listenauswahl --> welcher Liste sollen die Vektoren aus dem Popup-Menü zugeordnet werden
+%         
+%     handles.listenzuordnung = 0;
+%    
+%    
+%     % Benennung des PopUpMenues:
+%     
+%     names = handles.TXT(6:size(TXT,2));  % Auslesen aller Einträge ab 6. Spalte (erster Vektor nach den Zeiten!!!)
+%     names{end+1} = '-Select-';  % als letzter Eintrag des Popups soll "select" stehen
+%     
+%     set(handles.popupmenu_vektorauswahl,'String',names);            % Einfügen der Vektornamen ins Popup
+%     set(handles.popupmenu_vektorauswahl,'Value',numel(names));      % Popup Menü wird auf letzten Eintrag "- Select -" gesetzt
+%     
+%     guidata(hObject, handles);                      % Übernahme der Änderungen
+% 
+%     
+%     handles = guidata(hObject);
+%     guidata(hObject, handles)
+% end
+%% Laden aus einer m. file
+
+[name,pfad] = uigetfile('*.mat','Lade');
+if name == 0
     set(handles.edit_bemerkung,'String',{'Fehler: Keine Daten geladen!'});      % Ausgabe Fehlermeldung
     set(handles.edit_bemerkung,'BackgroundColor','red');                        % Färben des Hintergrunds bei Fehlermeldung
     handles = guidata(hObject);
-    return
+    return;
 else
     set(handles.edit_bemerkung,'String','Keine Bemerkungen');       % Zurücksetzen des Bemerkungsfeldes, falls vorher Fehlermeldung
     set(handles.edit_bemerkung,'BackgroundColor','white');          % Zurücksetzen auf weißen Hintergrund
     
-    [type,sheetname] = xlsfinfo(filename);      %Abfragen der Informationen ueber das Excel File
-    sheet = sheetname{2};                       % Welche Blätter sollen eingelesen werden? Hier muss der Name des Blattes stehen und nicht die Nummer oder so.
-    guidata(hObject, handles);              % Übernahme der Änderungen
-    [A,TXT,RAW]=xlsread(filename,sheet);        % Einlesen der Daten. A ist die Matrix mit den Werten, TXT ist die Matrix mit dem Header und Raw der ganze rest nochmal zusammen
-    A = snip(A,nan);                            % Herausschneiden der nicht geschriebenen Werte
-    TXT = TXT (1,:);                            % Es wird nur die erste Zeile benutzt
-    
-    % Die gelesenen Matrizen werden in die function handles geschrieben
-    handles.A = A;
-    handles.TXT = TXT;
-    handles.RAW = RAW;
-    
+Laden_mat = load([pfad name],'logIDs','logVal');
+Laden_mat.logIDs = Laden_mat.logIDs(1,2:end);
+TXT = Laden_mat.logIDs;
+handles.TXT = Laden_mat.logIDs;
+handles.A = Laden_mat.logVal;
+end
+
+time = Laden_mat.logVal(2:end,1);
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleiche 
+
+
     % Einfügen einer Listenauswahl --> welcher Liste sollen die Vektoren aus dem Popup-Menü zugeordnet werden
         
     handles.listenzuordnung = 0;
@@ -142,16 +186,16 @@ else
     
     handles = guidata(hObject);
     guidata(hObject, handles)
-end
-time = A(2:end,3);
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleiche 
-set(handles.slider_startzeit,'Min',time(1))
-set(handles.slider_startzeit,'Max',time(end))
-set(handles.slider_startzeit,'Value',time(1))
-set(handles.edit_start_zeit,'String',time_string(1,:))
-set(handles.slider_endzeit,'Min',time(1))
-set(handles.slider_endzeit,'Max',time(end))
-set(handles.slider_endzeit,'Value',time(1))
+
+
+
+% set(handles.slider_startzeit,'Min',time(1))
+% set(handles.slider_startzeit,'Max',time(end))
+% set(handles.slider_startzeit,'Value',time(1))
+% set(handles.edit_start_zeit,'String',time_string(1,:))
+% set(handles.slider_endzeit,'Min',time(1))
+% set(handles.slider_endzeit,'Max',time(end))
+% set(handles.slider_endzeit,'Value',time(1))
 % ... und aktualisiert
 guidata(hObject, handles)
 
@@ -171,7 +215,7 @@ function popupmenu_vektorauswahl_Callback(hObject, eventdata, handles)
 %----- Von hier an eigener Code -----
 guidata(hObject, handles)
 
-
+% Test 
 contents = cellstr(get(hObject,'String'));      % getroffene Auswahl wird als cell array ausgegeben
 value = contents{get(hObject,'Value')};         % getroffene Auswahl wird von Cell-Array in char umgewandelt ??? --> über Variable "value" kann auf Auswahl als 'String' zugegriffen werden
 VAL = cellstr(value);                           % wandelt die Auswahl wieder zurück in ein cell array --> siehe "help cellstr"
@@ -193,16 +237,16 @@ value = contents{get(hObject,'Value')};
 VAL = cellstr(value);
 A = handles.A;
 TXT = handles.TXT;
-RAW = handles.RAW;
+% RAW = handles.RAW;
 Index = find(strcmp(VAL, TXT));
 % Um zwei zur?cksetzen, um auf die Matrix A auszurichten
-Index = Index - 2;
+% Index = Index - 2;
 
-time = A(2:end,3);
+time = A(:,1);
 time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 
 hold on; 
-plot(handles.axes1,time,A(2:end,Index))
+plot(handles.axes1,time,A(:,Index))
 legend(VAL);
 xlabel('time');
 ylabel('Temperatur in °C');
@@ -792,8 +836,8 @@ function pushbutton_plotten_Callback(hObject, eventdata, handles)
 % Übernehmen der Daten vom Auslesen der Daten
 A = handles.A;
 TXT = handles.TXT;
-RAW = handles.RAW;
-  time = A(2:end,3);
+% RAW = handles.RAW;
+  time = A(:,1);
   time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 
 switch handles.listenzuordnung                   % Case-Unterscheidung je nachdem welche Liste aktiviert ist!!!
@@ -814,8 +858,8 @@ switch handles.listenzuordnung                   % Case-Unterscheidung je nachde
           % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
             Index = find(strcmp(inhalt(z), TXT));
         % Um zwei zur?cksetzen, um auf die Matrix A auszurichten
-            Index = Index - 2;
-            plot(time,A(2:end,Index))
+%            Index = Index - 2;
+            plot(time,A(:,Index))
             xlabel('time');
             grid on 
             % die umgewandelte Zeit wird auf die x-Achse geschrieben
