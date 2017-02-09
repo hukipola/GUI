@@ -24,7 +24,7 @@ function varargout = GUI_DBTA_2(varargin)
 
 % Edit the above text to modify the response to help GUI_DBTA_2
 
-% Last Modified by GUIDE v2.5 09-Feb-2017 12:54:36
+% Last Modified by GUIDE v2.5 09-Feb-2017 16:31:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -119,11 +119,18 @@ Laden_mat.logIDs = Laden_mat.logIDs(1,:);
 logIDs = Laden_mat.logIDs;
 % Der String wird gesucht, der mit dem Namen Versuchszeit 11 character
 % gemeinsam hat
-zeitposition = find(strncmpi('Versuchszeit', logIDs,11));
+zeitposition = find(strncmpi('Versuchszeit', logIDs,8));
 handles.logIDs = Laden_mat.logIDs;
 handles.logVal = Laden_mat.logVal;
 handles.time = handles.logVal(:,zeitposition);
 handles.time_string=datestr(handles.time,'HH:MM:SS');
+% Weitere Vektor mit Anzahl an Einträgen, über den die Zeitberechnung
+% laufen kann. Dies entspricht einer Messwertaufzeichnung von einem Wert
+% pro Sekunde
+handles.sekunden = 0:length(handles.time);
+handles.minuten = handles.sekunden/60; % Bei einer 1 sekündlichen Messwertaufzeichnung
+handles.stunden = handles.minuten/60;
+
 end
     % Einfügen einer Listenauswahl --> welcher Liste sollen die Vektoren aus dem Popup-Menü zugeordnet werden
         
@@ -132,7 +139,7 @@ end
    
     % Benennung des PopUpMenues:
     
-    names = handles.logIDs(2:size(logIDs,2));  % Auslesen aller Einträge ab 6. Spalte (erster Vektor nach den Zeiten!!!)
+    names = handles.logIDs(1:size(logIDs,2));  % Auslesen aller Einträge ab 6. Spalte (erster Vektor nach den Zeiten!!!)
     names{end+1} = '-Select-';  % als letzter Eintrag des Popups soll "select" stehen
     
     set(handles.popupmenu_vektorauswahl,'String',names);            % Einfügen der Vektornamen ins Popup
@@ -147,6 +154,39 @@ end
 
 set(handles.edit_start_zeit,'String',handles.time_string(1,:))
 set(handles.edit_end_zeit,'String',handles.time_string(end,:))
+% Listen werden zurückgesetzt
+set(handles.listbox_ausgewaehltevektoren1,'String',[]); 
+set(handles.listbox_ausgewaehltevektoren2,'String',[]); 
+set(handles.listbox_ausgewaehltevektoren3,'String',[]); 
+set(handles.listbox_ausgewaehltevektoren4,'String',[]); 
+set(handles.listbox_ausgewaehltevektoren5,'String',[]); 
+set(handles.listbox_ausgewaehltevektoren6,'String',[]); 
+
+% Abbildung wird gecleared
+cla(gca)
+reset(gca);
+legend HIDE;
+
+% Listenzuordnung wird auf 0 gesetzt
+
+handles.listenzuordnung = 0;                        % Ändert die Variable "listenzuordnung" auf den Index der Liste 1
+
+set(handles.edit1,'String','Nicht aktiviert');            % Ändert das Textfeld, wenn Liste 1 aktiviert wird
+set(handles.edit2,'String','Nicht aktiviert');      % Ändert das Textfeld von Liste 2 auf "nicht aktiviert", wenn Liste 1 aktiviert wird
+set(handles.edit3,'String','Nicht aktiviert');
+set(handles.edit4,'String','Nicht aktiviert');
+set(handles.edit5,'String','Nicht aktiviert');
+set(handles.edit6,'String','Nicht aktiviert');
+
+
+% Slider werden initialisiert
+set(handles.slider_startzeit,'Min',handles.sekunden(1))
+set(handles.slider_startzeit,'Max',handles.sekunden(end))
+set(handles.slider_startzeit,'Value',handles.sekunden(1))
+set(handles.slider_endzeit,'Min',handles.sekunden(1))
+set(handles.slider_endzeit,'Max',handles.sekunden(end))
+set(handles.slider_endzeit,'Value',handles.sekunden(end))
+
 % ... und aktualisiert
 guidata(hObject, handles)
 
@@ -427,6 +467,11 @@ set(handles.edit4,'String','Nicht aktiviert');
 set(handles.edit5,'String','Nicht aktiviert');
 set(handles.edit6,'String','Nicht aktiviert');
 
+cla(gca)
+reset(gca);
+legend HIDE;
+
+
 
 guidata(hObject, handles)
 
@@ -448,7 +493,12 @@ set(handles.edit4,'String','Nicht aktiviert');
 set(handles.edit5,'String','Nicht aktiviert');
 set(handles.edit6,'String','Nicht aktiviert');
 
+cla(gca)
+reset(gca);
+legend HIDE;
+
 guidata(hObject, handles)
+
 
 
 % --- Executes on button press in pushbutton_aktivieren3.
@@ -466,6 +516,10 @@ set(handles.edit3,'String','Aktiviert');
 set(handles.edit4,'String','Nicht aktiviert');
 set(handles.edit5,'String','Nicht aktiviert');
 set(handles.edit6,'String','Nicht aktiviert');
+
+cla(gca)
+reset(gca);
+legend HIDE;
 
 guidata(hObject, handles)
 
@@ -486,6 +540,10 @@ set(handles.edit4,'String','Aktiviert');
 set(handles.edit5,'String','Nicht aktiviert');
 set(handles.edit6,'String','Nicht aktiviert');
 
+cla(gca)
+reset(gca);
+legend HIDE;
+
 guidata(hObject, handles)
 
 
@@ -505,6 +563,10 @@ set(handles.edit4,'String','Nicht aktiviert');
 set(handles.edit5,'String','Aktiviert');
 set(handles.edit6,'String','Nicht aktiviert');
 
+cla(gca)
+reset(gca);
+legend HIDE;
+
 guidata(hObject, handles)
 
 
@@ -523,6 +585,10 @@ set(handles.edit3,'String','Nicht aktiviert');
 set(handles.edit4,'String','Nicht aktiviert');
 set(handles.edit5,'String','Nicht aktiviert');
 set(handles.edit6,'String','Aktiviert');
+
+cla(gca)
+reset(gca);
+legend HIDE;
 
 guidata(hObject, handles)
 
@@ -767,7 +833,6 @@ function pushbutton_plotten_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
 % ----- Von hier an eigener Code -----
 % In dieser Funktion wird wieder der Wert der listenzuordnung ausgelesen,
 % um die Werte in der aktivierten Liste plotten zu können. 
@@ -777,8 +842,8 @@ function pushbutton_plotten_Callback(hObject, eventdata, handles)
 % Übernehmen der Daten vom Auslesen der Daten
 logVal = handles.logVal;
 logIDs = handles.logIDs;
-  time = handles.time;
-  time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+time = handles.time;
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 
 switch handles.listenzuordnung                   % Case-Unterscheidung je nachdem welche Liste aktiviert ist!!!
     case 0
@@ -956,7 +1021,11 @@ function pushbutton_temp_plot_loeschen_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_temp_plot_loeschen (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-cla(handles.axes1)
+% Abbildung wird gecleared
+cla(gca)
+reset(gca);
+legend HIDE;
+
 
 
 
@@ -1018,10 +1087,11 @@ function slider_startzeit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-wert = get(hObject,'Value');
-disp(get(hObject,'Min'))
-disp(wert)
+value = get(hObject,'Value');
+set(handles.edit_start_zeit,'String',handles.time_string(round(value),:))
 guidata(hObject, handles)
+
+
 
 
 
@@ -1047,7 +1117,10 @@ function slider_endzeit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
+disp('Endzeit')
+value = get(hObject,'Value')
+set(handles.edit_end_zeit,'String',handles.time_string(round(value),:))
+guidata(hObject, handles)
 
 % --- Executes during object creation, after setting all properties.
 function slider_endzeit_CreateFcn(hObject, eventdata, handles)
@@ -1088,4 +1161,195 @@ if save_name == 0 return, end
 save(fullfile(save_pfad,save_name),'logVal','logIDs','Versuchszeit','Zeit')
 
 
+% --- Executes on button press in pushbutton_liste2_speichern.
+function pushbutton_liste2_speichern_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_liste2_speichern (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+logVal = handles.logVal;
+logIDs = handles.logIDs;
+time = handles.time;
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+% Der Inhalt der ersten Listbox wird gelesen...
+inhalt = get(handles.listbox_ausgewaehltevektoren2,'String');
+% und zu einem String umgewandelt
+inhalt = cellstr(inhalt);
 
+for z=1:length(inhalt)
+% Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
+Index = find(strcmp(inhalt(z), logIDs));
+logVal(:,z) = logVal(:,Index);
+end
+logIDs = inhalt';
+Zeit = time_string;
+Versuchszeit = time;
+[save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
+if save_name == 0 return, end
+save(fullfile(save_pfad,save_name),'logVal','logIDs','Versuchszeit','Zeit')
+
+
+% --- Executes on button press in pushbutton_liste3_speichern.
+function pushbutton_liste3_speichern_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_liste3_speichern (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+logVal = handles.logVal;
+logIDs = handles.logIDs;
+time = handles.time;
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+% Der Inhalt der ersten Listbox wird gelesen...
+inhalt = get(handles.listbox_ausgewaehltevektoren3,'String');
+% und zu einem String umgewandelt
+inhalt = cellstr(inhalt);
+
+for z=1:length(inhalt)
+% Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
+Index = find(strcmp(inhalt(z), logIDs));
+logVal(:,z) = logVal(:,Index);
+end
+logIDs = inhalt';
+Zeit = time_string;
+Versuchszeit = time;
+[save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
+if save_name == 0 return, end
+save(fullfile(save_pfad,save_name),'logVal','logIDs','Versuchszeit','Zeit')
+
+
+% --- Executes on button press in pushbutton_liste4_speichern.
+function pushbutton_liste4_speichern_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_liste4_speichern (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+logVal = handles.logVal;
+logIDs = handles.logIDs;
+time = handles.time;
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+% Der Inhalt der ersten Listbox wird gelesen...
+inhalt = get(handles.listbox_ausgewaehltevektoren4,'String');
+% und zu einem String umgewandelt
+inhalt = cellstr(inhalt);
+
+for z=1:length(inhalt)
+% Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
+Index = find(strcmp(inhalt(z), logIDs));
+logVal(:,z) = logVal(:,Index);
+end
+logIDs = inhalt';
+Zeit = time_string;
+Versuchszeit = time;
+[save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
+if save_name == 0 return, end
+save(fullfile(save_pfad,save_name),'logVal','logIDs','Versuchszeit','Zeit')
+
+
+% --- Executes on button press in pushbutton_liste5_speichern.
+function pushbutton_liste5_speichern_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_liste5_speichern (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+logVal = handles.logVal;
+logIDs = handles.logIDs;
+time = handles.time;
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+% Der Inhalt der ersten Listbox wird gelesen...
+inhalt = get(handles.listbox_ausgewaehltevektoren5,'String');
+% und zu einem String umgewandelt
+inhalt = cellstr(inhalt);
+
+for z=1:length(inhalt)
+% Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
+Index = find(strcmp(inhalt(z), logIDs));
+logVal(:,z) = logVal(:,Index);
+end
+logIDs = inhalt';
+Zeit = time_string;
+Versuchszeit = time;
+[save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
+if save_name == 0 return, end
+save(fullfile(save_pfad,save_name),'logVal','logIDs','Versuchszeit','Zeit')
+
+
+% --- Executes on button press in pushbutton_liste6_speichern.
+function pushbutton_liste6_speichern_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_liste6_speichern (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+logVal = handles.logVal;
+logIDs = handles.logIDs;
+time = handles.time;
+time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+% Der Inhalt der ersten Listbox wird gelesen...
+inhalt = get(handles.listbox_ausgewaehltevektoren6,'String');
+% und zu einem String umgewandelt
+inhalt = cellstr(inhalt);
+
+for z=1:length(inhalt)
+% Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
+Index = find(strcmp(inhalt(z), logIDs));
+logVal(:,z) = logVal(:,Index);
+end
+logIDs = inhalt';
+Zeit = time_string;
+Versuchszeit = time;
+[save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
+if save_name == 0 return, end
+save(fullfile(save_pfad,save_name),'logVal','logIDs','Versuchszeit','Zeit')
+
+
+% --- Executes on button press in pushbutton_crop.
+function pushbutton_crop_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_crop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+startzeit = round(get(handles.slider_startzeit,'Value'));
+endzeit = round(get(handles.slider_endzeit,'Value')) - (handles.sekunden(startzeit) - handles.sekunden(1));
+
+if handles.time(endzeit) < handles.time(startzeit)
+    set(handles.edit_bemerkung,'String','Fehler: Start>Ende')
+    set(handles.edit_bemerkung,'BackgroundColor','red');
+else
+    set(handles.edit_bemerkung,'BackgroundColor','white');
+    
+    % Der Zeitvektor in den handles wird zugeschnitten, damit ist der
+    % Speicher schon zugeschnitten
+
+    handles.time = handles.time(startzeit:endzeit);
+%     disp(handles.time(startzeit))
+%     disp(handles.time(endzeit))
+%     disp(startzeit)
+%     disp(endzeit)
+    handles.logVal = handles.logVal(startzeit:endzeit,:);
+    handles.sekunden = handles.sekunden(startzeit:endzeit);
+    handles.minuten = handles.sekunden/60; % Bei einer 1 sekündlichen Messwertaufzeichnung
+    handles.stunden = handles.minuten/60;
+%         disp(handles.time_string(round(startzeit),:))
+%     disp(handles.time_string(round(endzeit),:))
+    % Slider werden neu initialisiert
+set(handles.slider_startzeit,'Min',handles.sekunden(1))
+set(handles.slider_startzeit,'Max',handles.sekunden(end))
+set(handles.slider_startzeit,'Value',handles.sekunden(1))
+
+set(handles.slider_endzeit,'Min',handles.sekunden(1))
+set(handles.slider_endzeit,'Max',handles.sekunden(end))
+set(handles.slider_endzeit,'Value',handles.sekunden(end))
+
+end
+
+guidata(hObject, handles)
+
+
+
+
+% --- Executes on button press in pushbutton_zuschnittspeichern.
+function pushbutton_zuschnittspeichern_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_zuschnittspeichern (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Ab hier automatischen Speichern der zugeschnittenen Daten
+logVal = handles.logVal;
+logIDs = handles.logIDs;
+Versuchszeit = handles.time;
+Zeit = datestr(handles.time,'HH:MM:SS');
+[save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
+if save_name == 0 return, end
+save(fullfile(save_pfad,save_name),'logVal','logIDs','Versuchszeit','Zeit')
