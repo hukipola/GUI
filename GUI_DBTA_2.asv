@@ -102,34 +102,48 @@ function pushbutton_datenladen_Callback(hObject, eventdata, handles)
 
 % Die handles werden aktualisiert
 handles = guidata(hObject);
-%% Laden aus einer m. file
+%% Laden aus einer Matlab file
 
+% Fenster wird zum Laden geöffnet
 [name,pfad] = uigetfile('*.mat','Lade');
+% wenn nix ausgewählt wurde:
 if name == 0
     set(handles.edit_bemerkung,'String',{'Fehler: Keine Daten geladen!'});      % Ausgabe Fehlermeldung
     set(handles.edit_bemerkung,'BackgroundColor','red');                        % Färben des Hintergrunds bei Fehlermeldung
     handles = guidata(hObject);
     return;
+    % wenn was ausgewählt wurde:
 else
     set(handles.edit_bemerkung,'String','Keine Bemerkungen');       % Zurücksetzen des Bemerkungsfeldes, falls vorher Fehlermeldung
     set(handles.edit_bemerkung,'BackgroundColor','white');          % Zurücksetzen auf weißen Hintergrund
-    
+
+    % Datei wird geladen, die beiden Strings stehen für die im Structure
+    % enthaltenen Dateien. Diese müssen ebenso in der Datei, die eigelesen wird so benannt sein!
 Laden_mat = load([pfad name],'logIDs','logVal');
 Laden_mat.logIDs = Laden_mat.logIDs(1,:);
 logIDs = Laden_mat.logIDs;
-% Der String wird gesucht, der mit dem Namen Versuchszeit 11 character
+% Der String wird gesucht, der mit dem Namen Versuchszeit 8 character
 % gemeinsam hat
 zeitposition = find(strncmpi('Versuchszeit', logIDs,8));
+
+% Die Werte aus dem eingelesenen Structure werden in die handles der GUI
+% gespeichert
 handles.logIDs = Laden_mat.logIDs;
 handles.logVal = Laden_mat.logVal;
 handles.time = handles.logVal(:,zeitposition);
-handles.time_string=datestr(handles.time,'HH:MM:SS');
+% Der Zeitvektor wird umbenannt in einen String, den man verstehen kann
+handles.time_string=datestr(handles.time,'HH:MM:SS'); 
+
 % Weitere Vektor mit Anzahl an Einträgen, über den die Zeitberechnung
 % laufen kann. Dies entspricht einer Messwertaufzeichnung von einem Wert
-% pro Sekunde
-handles.sekunden = 0:length(handles.time);
+% pro Sekunde ---> Wird benutzt beim Zuschneiden der Messwerte
+handles.sekunden = 1:length(handles.time);
 handles.minuten = handles.sekunden/60; % Bei einer 1 sekündlichen Messwertaufzeichnung
 handles.stunden = handles.minuten/60;
+
+% Für zuschneiden nötig, in Funktion "crop". 0= es wurde noch nicht
+% zugeschnitten
+handles.croped = 0;
 
 end
     % Einfügen einer Listenauswahl --> welcher Liste sollen die Vektoren aus dem Popup-Menü zugeordnet werden
@@ -204,13 +218,14 @@ function popupmenu_vektorauswahl_Callback(hObject, eventdata, handles)
 
 
 %----- Von hier an eigener Code -----
+% Damit die handles in dieser funktion ansprechbar sind müssen sie hiermit
+% geladen werden
 guidata(hObject, handles)
 
-% Test 
 contents = cellstr(get(hObject,'String'));      % getroffene Auswahl wird als cell array ausgegeben
 value = contents{get(hObject,'Value')};         % getroffene Auswahl wird von Cell-Array in char umgewandelt ??? --> über Variable "value" kann auf Auswahl als 'String' zugegriffen werden
 VAL = cellstr(value);                           % wandelt die Auswahl wieder zurück in ein cell array --> siehe "help cellstr"
-% 
+
 guidata(hObject, handles)
 handles = guidata(hObject);
 % mit diesem Befehl wird der Wert aus der Auswahl ausgelesen
@@ -220,9 +235,8 @@ VAL = cellstr(value);
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 Index = find(strcmp(VAL, logIDs));
-% Um zwei zur?cksetzen, um auf die Matrix A auszurichten
-% Index = Index - 2;
 
+% Aus den handles wird gelesen und in weitere Variablen gespeichert
 time = handles.time;
 time_string=datestr(handles.time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 
@@ -232,10 +246,15 @@ legend(VAL);
 xlabel('time');
 ylabel('Temperatur in °C');
 grid on 
-% Setzen der Plotvariable auf 'T'
-handles.peins = 0;
+
+
 guidata(hObject, handles)
+
+% Die Ticks der x-achse werden anhand des Vektors, über den die Messwerte
+% geplottet werden eingeteilt. In Viertel Schritte
 set(gca, 'XTick', [time(1);time(round(length(time)/4));time(round(length(time)/2));time(round(length(time)*3/4));time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
+% Die Benennung der Ticks wird mit dem Vektor der lesbaren Zeiteinheiten
+% beschriftet.
 set(gca, 'XTickLabel',{time_string(1,:);time_string(round(length(time_string)/4),:);time_string(round(length(time_string)/2),:);time_string(round(length(time_string)*3/4),:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
 
 switch handles.listenzuordnung                   % Case-Unterscheidung je nachdem welche Liste aktiviert ist!!!
@@ -467,6 +486,8 @@ set(handles.edit4,'String','Nicht aktiviert');
 set(handles.edit5,'String','Nicht aktiviert');
 set(handles.edit6,'String','Nicht aktiviert');
 
+% Sobald eine andere Liste aktiviert wird, werden alte Einstellungen
+% zurückgesetzt
 cla(gca)
 reset(gca);
 legend HIDE;
@@ -1087,7 +1108,12 @@ function slider_startzeit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+% Der per Slider eingestellte Wert wird eingelesen
 value = get(hObject,'Value');
+% Das Textfeld wird mit diesem Wert beschrieben, wobei durch den Slider ein
+% Index bekommen wurde, welcher mit dem time_string vektor auf eine Zeit
+% verweist.
 set(handles.edit_start_zeit,'String',handles.time_string(round(value),:))
 guidata(hObject, handles)
 
@@ -1117,8 +1143,9 @@ function slider_endzeit_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-disp('Endzeit')
-value = get(hObject,'Value')
+
+% Siehe Oben
+value = get(hObject,'Value');
 set(handles.edit_end_zeit,'String',handles.time_string(round(value),:))
 guidata(hObject, handles)
 
@@ -1139,6 +1166,7 @@ function pushbutton_liste1_speichern_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_liste1_speichern (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+% Um für ein besseres handling zu sorgen werden die ausgewählten Dateien ausgelesen
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
@@ -1148,14 +1176,17 @@ inhalt = get(handles.listbox_ausgewaehltevektoren1,'String');
 % und zu einem String umgewandelt
 inhalt = cellstr(inhalt);
 
+% Für die Länge dieses Strings wird folgendes durchgeführt
 for z=1:length(inhalt)
 % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
 Index = find(strcmp(inhalt(z), logIDs));
 logVal(:,z) = logVal(:,Index);
 end
+% Beschreiben der zu speichernden Werte
 logIDs = inhalt';
 Zeit = time_string;
 Versuchszeit = time;
+% Abspeichern in der GUI
 [save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
 if save_name == 0 return, end
 save(fullfile(save_pfad,save_name),'logVal','logIDs','Versuchszeit','Zeit')
@@ -1301,29 +1332,38 @@ function pushbutton_crop_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_crop (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-startzeit = round(get(handles.slider_startzeit,'Value'));
-endzeit = round(get(handles.slider_endzeit,'Value')) - (handles.sekunden(startzeit) - handles.sekunden(1));
 
-if handles.time(endzeit) < handles.time(startzeit)
-    set(handles.edit_bemerkung,'String','Fehler: Start>Ende')
+% Abfrage, ob schonmal gecropped wurde. Mehrmaliges Zuschneiden
+% funktioniert noch nicht fehlerfrei. Daher muss ein einmal zugeschnittener
+% Vektor erneut eingelesen werden. Problem dabei ist die Numerierung der
+% Zeiteinheiten. 
+if handles.croped == 1
+    set(handles.edit_bemerkung,'String','Fehler: bereits zugeschnitten')
     set(handles.edit_bemerkung,'BackgroundColor','red');
 else
+set(handles.edit_bemerkung,'BackgroundColor','white');
+
+startzeit = round(get(handles.slider_startzeit,'Value'));
+endzeit = round(get(handles.slider_endzeit,'Value'));
+
+
+if endzeit < startzeit
+    set(handles.edit_bemerkung,'String','Fehler: Start>Ende')
+    set(handles.edit_bemerkung,'BackgroundColor','red');
+    return
+else
     set(handles.edit_bemerkung,'BackgroundColor','white');
+end
     
     % Der Zeitvektor in den handles wird zugeschnitten, damit ist der
     % Speicher schon zugeschnitten
 
     handles.time = handles.time(startzeit:endzeit);
-%     disp(handles.time(startzeit))
-%     disp(handles.time(endzeit))
-%     disp(startzeit)
-%     disp(endzeit)
+
     handles.logVal = handles.logVal(startzeit:endzeit,:);
     handles.sekunden = handles.sekunden(startzeit:endzeit);
     handles.minuten = handles.sekunden/60; % Bei einer 1 sekündlichen Messwertaufzeichnung
     handles.stunden = handles.minuten/60;
-%         disp(handles.time_string(round(startzeit),:))
-%     disp(handles.time_string(round(endzeit),:))
     % Slider werden neu initialisiert
 set(handles.slider_startzeit,'Min',handles.sekunden(1))
 set(handles.slider_startzeit,'Max',handles.sekunden(end))
@@ -1333,6 +1373,9 @@ set(handles.slider_endzeit,'Min',handles.sekunden(1))
 set(handles.slider_endzeit,'Max',handles.sekunden(end))
 set(handles.slider_endzeit,'Value',handles.sekunden(end))
 
+% Variable wird auf 1 gesetzt, da einmal zugeschnitten wurde.
+% Fehlermeldung weist den Benutzer auf diesen zustand hin
+handles.croped = 1;
 end
 
 guidata(hObject, handles)
