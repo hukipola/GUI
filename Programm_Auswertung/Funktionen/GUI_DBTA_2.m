@@ -1,5 +1,10 @@
+%% V1.1 14.02.2017
+% Autoren: Robert Dieckmann und Matthis Kurth
+
+
 %% -- Startsequenz --> automatisch erstellt --
 %% Mit Matlab Lade Funktion!!!!
+
 
 function varargout = GUI_DBTA_2(varargin)
 % GUI_DBTA_2 MATLAB code for GUI_DBTA_2.fig
@@ -208,6 +213,14 @@ set(handles.edit3,'String','Nicht aktiviert');
 set(handles.edit4,'String','Nicht aktiviert');
 set(handles.edit5,'String','Nicht aktiviert');
 set(handles.edit6,'String','Nicht aktiviert');
+
+set(handles.edit1,'BackgroundColor','white');            % Ändert das Textfeld, wenn Liste 1 aktiviert wird
+set(handles.edit2,'BackgroundColor','white');     % Ändert das Textfeld von Liste 2 auf "nicht aktiviert", wenn Liste 1 aktiviert wird
+set(handles.edit3,'BackgroundColor','white'); 
+set(handles.edit4,'BackgroundColor','white'); 
+set(handles.edit5,'BackgroundColor','white'); 
+set(handles.edit6,'BackgroundColor','white'); 
+
 
 
 % Slider werden initialisiert
@@ -1235,7 +1248,8 @@ Index = find(strcmp(inhalt(z), logIDs));
 logVal(:,z) = Werte(:,Index);
 end
 % Beschreiben der zu speichernden Werte
-logIDs = inhalt';
+logVal = [logVal time];
+logIDs = [inhalt' 'Versuchszeit'];
 Zeit = time_string;
 Versuchszeit = time;
 % Abspeichern in der GUI
@@ -1263,7 +1277,8 @@ for z=1:length(inhalt)
 Index = find(strcmp(inhalt(z), logIDs));
 logVal(:,z) = Werte(:,Index);
 end
-logIDs = inhalt';
+logVal = [logVal time];
+logIDs = [inhalt' 'Versuchszeit'];
 Zeit = time_string;
 Versuchszeit = time;
 [save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
@@ -1290,7 +1305,8 @@ for z=1:length(inhalt)
 Index = find(strcmp(inhalt(z), logIDs));
 logVal(:,z) = Werte(:,Index);
 end
-logIDs = inhalt';
+logVal = [logVal time];
+logIDs = [inhalt' 'Versuchszeit'];
 Zeit = time_string;
 Versuchszeit = time;
 [save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
@@ -1317,7 +1333,8 @@ for z=1:length(inhalt)
 Index = find(strcmp(inhalt(z), logIDs));
 logVal(:,z) = Werte(:,Index);
 end
-logIDs = inhalt';
+logVal = [logVal time];
+logIDs = [inhalt' 'Versuchszeit'];
 Zeit = time_string;
 Versuchszeit = time;
 [save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
@@ -1344,7 +1361,8 @@ for z=1:length(inhalt)
 Index = find(strcmp(inhalt(z), logIDs));
 logVal(:,z) = Werte(:,Index);
 end
-logIDs = inhalt';
+logVal = [logVal time];
+logIDs = [inhalt' 'Versuchszeit'];
 Zeit = time_string;
 Versuchszeit = time;
 [save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
@@ -1371,7 +1389,8 @@ for z=1:length(inhalt)
 Index = find(strcmp(inhalt(z), logIDs));
 logVal(:,z) = Werte(:,Index);
 end
-logIDs = inhalt';
+logVal = [logVal time];
+logIDs = [inhalt' 'Versuchszeit'];
 Zeit = time_string;
 Versuchszeit = time;
 [save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
