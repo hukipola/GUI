@@ -22,7 +22,7 @@ function varargout = Auswertungstool_MainGUI(varargin)
 
 % Edit the above text to modify the response to help Auswertungstool_MainGUI
 
-% Last Modified by GUIDE v2.5 09-Feb-2017 12:26:09
+% Last Modified by GUIDE v2.5 14-Feb-2017 11:21:56
 
 %% Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -77,14 +77,18 @@ function pushbutton_grafisch_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_grafisch (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-fprintf('Matthis und Robi')
+run(fullfile(pwd, 'Funktionen', 'GUI_DBTA_2.m'))
+guidata(hObject, handles);
 
 % --- Executes on button press in pushbutton_konv_alle.
 function pushbutton_konv_alle_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_konv_alle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.Status_Konv,'String','Busy');
 run(fullfile(pwd, 'Funktionen', 'funk_excel2mat_alle.m'))
+set(handles.Status_Konv,'String','Bereit');
+guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton_konv_einzel.
@@ -92,7 +96,12 @@ function pushbutton_konv_einzel_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_konv_einzel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+set(handles.Status_Konv,'String','Busy');
 run(fullfile(pwd, 'Funktionen', 'funk_excel2mat_einzel.m'))
+set(handles.Status_Konv,'String','Bereit');
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton_main_beenden.
@@ -102,9 +111,28 @@ function pushbutton_main_beenden_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 close all
 
-% --- Executes on button press in pushbutton_menu3.
-function pushbutton_menu3_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_menu3 (see GCBO)
+
+
+
+
+function Status_Konv_Callback(hObject, eventdata, handles)
+% hObject    handle to Status_Konv (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-fprintf('Menü 3')
+
+% Hints: get(hObject,'String') returns contents of Status_Konv as text
+%        str2double(get(hObject,'String')) returns contents of Status_Konv as a double
+
+
+
+% --- Executes during object creation, after setting all properties.
+function Status_Konv_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Status_Konv (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

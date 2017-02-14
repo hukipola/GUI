@@ -3,10 +3,12 @@ function [] = funk_excel2mat_alle()
 
 %% Auswahl des Verzeichnisses mit den zu konvertierenden Excel-Files
 load_pfad = uigetdir('', 'Wählen Sie den ORDNER mit den zu konvertierenden EXCEL-FILES aus:');
+if load_pfad==0 return, end %für Abbrechen-Button
 Files = dir(load_pfad);
 
 %% Auswahl des Zielverzeichnisses für die erzeugten Mat-Files
 save_pfad = uigetdir('', 'Wählen Sie den ZIELORDNER für die MAT-FILES aus:');
+if save_pfad==0 return, end %für Abbrechen-Button
 
 %% Auslesen der Excel-Files und Abspeichern als Mat-Files mit gleichem Namen
 for i = 1:length(Files)
