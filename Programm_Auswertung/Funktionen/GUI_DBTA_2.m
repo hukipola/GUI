@@ -1,5 +1,6 @@
 %% -- Startsequenz --> automatisch erstellt --
 %% Mit Matlab Lade Funktion!!!!
+
 function varargout = GUI_DBTA_2(varargin)
 % GUI_DBTA_2 MATLAB code for GUI_DBTA_2.fig
 %      GUI_DBTA_2, by itself, creates a new GUI_DBTA_2 or raises the existing
@@ -24,7 +25,7 @@ function varargout = GUI_DBTA_2(varargin)
 
 % Edit the above text to modify the response to help GUI_DBTA_2
 
-% Last Modified by GUIDE v2.5 09-Feb-2017 16:31:24
+% Last Modified by GUIDE v2.5 14-Feb-2017 12:32:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -132,14 +133,30 @@ handles.logIDs = Laden_mat.logIDs;
 handles.logVal = Laden_mat.logVal;
 handles.time = handles.logVal(:,zeitposition);
 % Der Zeitvektor wird umbenannt in einen String, den man verstehen kann
-handles.time_string=datestr(handles.time,'HH:MM:SS'); 
+handles.time_string=datestr(handles.time,'dd:HH:MM:SS'); 
 
 % Weitere Vektor mit Anzahl an Einträgen, über den die Zeitberechnung
 % laufen kann. Dies entspricht einer Messwertaufzeichnung von einem Wert
 % pro Sekunde ---> Wird benutzt beim Zuschneiden der Messwerte
 handles.sekunden = 1:length(handles.time);
-handles.minuten = handles.sekunden/60; % Bei einer 1 sekündlichen Messwertaufzeichnung
-handles.stunden = handles.minuten/60;
+% handles.minuten = handles.sekunden/60; % Bei einer 1 sekündlichen Messwertaufzeichnung
+% handles.stunden = handles.minuten/60;
+
+%% Backup Daten werden in die handles geschrieben fuer das zuruecksetzen vom Beschneiden
+
+handles.logIDs_tmp = Laden_mat.logIDs;
+handles.logVal_tmp = Laden_mat.logVal;
+handles.time_tmp = handles.logVal(:,zeitposition);
+% Der Zeitvektor wird umbenannt in einen String, den man verstehen kann
+handles.time_string_tmp=datestr(handles.time,'dd:HH:MM:SS'); 
+
+% Weitere Vektor mit Anzahl an Einträgen, über den die Zeitberechnung
+% laufen kann. Dies entspricht einer Messwertaufzeichnung von einem Wert
+% pro Sekunde ---> Wird benutzt beim Zuschneiden der Messwerte
+handles.sekunden_tmp = 1:length(handles.time); % hier wird der Vektor Sekunden in die einzelnen Einträge untertelt
+% handles.minuten_tmp = handles.sekunden/60; % Bei einer 1 sekündlichen Messwertaufzeichnung
+% handles.stunden_tmp = handles.minuten/60;
+
 
 % Für zuschneiden nötig, in Funktion "crop". 0= es wurde noch nicht
 % zugeschnitten
@@ -238,13 +255,12 @@ Index = find(strcmp(VAL, logIDs));
 
 % Aus den handles wird gelesen und in weitere Variablen gespeichert
 time = handles.time;
-time_string=datestr(handles.time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+time_string=datestr(handles.time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 
 hold on; 
 plot(handles.axes1,time,logVal(:,Index))
 legend(VAL);
 xlabel('time');
-ylabel('Temperatur in °C');
 grid on 
 
 
@@ -252,10 +268,10 @@ guidata(hObject, handles)
 
 % Die Ticks der x-achse werden anhand des Vektors, über den die Messwerte
 % geplottet werden eingeteilt. In Viertel Schritte
-set(gca, 'XTick', [time(1);time(round(length(time)/4));time(round(length(time)/2));time(round(length(time)*3/4));time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
+set(gca, 'XTick', [time(1);time(round(length(time)/3));time(round(length(time)*2/3));time(end)]) % Hier wird die Verteilung der Ticks geregelt, daf?r wird der Array eingelesen, der nicht zum string konvertiert wurde
 % Die Benennung der Ticks wird mit dem Vektor der lesbaren Zeiteinheiten
 % beschriftet.
-set(gca, 'XTickLabel',{time_string(1,:);time_string(round(length(time_string)/4),:);time_string(round(length(time_string)/2),:);time_string(round(length(time_string)*3/4),:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
+set(gca, 'XTickLabel',{time_string(1,:);time_string(round(length(time_string)/3),:);time_string(round(length(time_string)*2/3),:);time_string(end,:)}) % Hier wird die Bezeichnung ge?ndert, da der array 'time' im nicht lesbaren Format vorliegt
 
 switch handles.listenzuordnung                   % Case-Unterscheidung je nachdem welche Liste aktiviert ist!!!
     case 0
@@ -864,7 +880,7 @@ function pushbutton_plotten_Callback(hObject, eventdata, handles)
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 
 switch handles.listenzuordnung                   % Case-Unterscheidung je nachdem welche Liste aktiviert ist!!!
     case 0
@@ -1170,7 +1186,7 @@ function pushbutton_liste1_speichern_Callback(hObject, eventdata, handles)
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 % Der Inhalt der ersten Listbox wird gelesen...
 inhalt = get(handles.listbox_ausgewaehltevektoren1,'String');
 % und zu einem String umgewandelt
@@ -1200,7 +1216,7 @@ function pushbutton_liste2_speichern_Callback(hObject, eventdata, handles)
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 % Der Inhalt der ersten Listbox wird gelesen...
 inhalt = get(handles.listbox_ausgewaehltevektoren2,'String');
 % und zu einem String umgewandelt
@@ -1227,7 +1243,7 @@ function pushbutton_liste3_speichern_Callback(hObject, eventdata, handles)
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 % Der Inhalt der ersten Listbox wird gelesen...
 inhalt = get(handles.listbox_ausgewaehltevektoren3,'String');
 % und zu einem String umgewandelt
@@ -1254,7 +1270,7 @@ function pushbutton_liste4_speichern_Callback(hObject, eventdata, handles)
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 % Der Inhalt der ersten Listbox wird gelesen...
 inhalt = get(handles.listbox_ausgewaehltevektoren4,'String');
 % und zu einem String umgewandelt
@@ -1281,7 +1297,7 @@ function pushbutton_liste5_speichern_Callback(hObject, eventdata, handles)
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 % Der Inhalt der ersten Listbox wird gelesen...
 inhalt = get(handles.listbox_ausgewaehltevektoren5,'String');
 % und zu einem String umgewandelt
@@ -1308,7 +1324,7 @@ function pushbutton_liste6_speichern_Callback(hObject, eventdata, handles)
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
-time_string=datestr(time,'HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
+time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
 % Der Inhalt der ersten Listbox wird gelesen...
 inhalt = get(handles.listbox_ausgewaehltevektoren6,'String');
 % und zu einem String umgewandelt
@@ -1396,7 +1412,61 @@ function pushbutton_zuschnittspeichern_Callback(hObject, eventdata, handles)
 logVal = handles.logVal;
 logIDs = handles.logIDs;
 Versuchszeit = handles.time;
-Zeit = datestr(handles.time,'HH:MM:SS');
+Zeit = datestr(handles.time,'dd:HH:MM:SS');
 [save_name,save_pfad] = uiputfile('*.mat','Als Mat file speichern');
 if save_name == 0 return, end
 save(fullfile(save_pfad,save_name),'logVal','logIDs','Versuchszeit','Zeit')
+
+
+
+
+
+
+
+
+% --- Executes during object deletion, before destroying properties.
+function figure1_DeleteFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+cd ..
+
+
+% --- Executes on button press in pushbutton_zurueck.
+function pushbutton_zurueck_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_zurueck (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.logIDs = handles.logIDs_tmp;
+handles.logVal = handles.logVal_tmp;
+handles.time = handles.time_tmp;
+% Der Zeitvektor wird umbenannt in einen String, den man verstehen kann
+handles.time_string=handles.time_string_tmp; 
+guidata(hObject, handles)
+% Weitere Vektor mit Anzahl an Einträgen, über den die Zeitberechnung
+% laufen kann. Dies entspricht einer Messwertaufzeichnung von einem Wert
+% pro Sekunde ---> Wird benutzt beim Zuschneiden der Messwerte
+handles.sekunden = handles.sekunden_tmp; % hier wird der Vektor Sekunden in die einzelnen Einträge untertelt
+% handles.minuten = handles.minuten_tmp; % Bei einer 1 sekündlichen Messwertaufzeichnung
+% handles.stunden = handles.stunden_tmp;
+guidata(hObject, handles)
+
+set(handles.edit_bemerkung,'String','Keine Bemerkung');
+set(handles.edit_bemerkung,'BackgroundColor','white');
+
+% Slider werden erneut initialisiert
+set(handles.slider_startzeit,'Min',handles.sekunden(1))
+set(handles.slider_startzeit,'Max',handles.sekunden(end))
+set(handles.slider_startzeit,'Value',handles.sekunden(1))
+set(handles.slider_endzeit,'Min',handles.sekunden(1))
+set(handles.slider_endzeit,'Max',handles.sekunden(end))
+set(handles.slider_endzeit,'Value',handles.sekunden(end))
+
+% Edit boxen werden zurückgesetzt
+set(handles.edit_start_zeit,'String',handles.time_string(1,:))
+set(handles.edit_end_zeit,'String',handles.time_string(end,:))
+handles.croped = 0;
+guidata(hObject, handles)
+
+
+

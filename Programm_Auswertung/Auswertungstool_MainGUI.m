@@ -57,6 +57,9 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+handles.home = pwd;
+guidata(hObject, handles);
+
 
 % UIWAIT makes Auswertungstool_MainGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -77,7 +80,9 @@ function pushbutton_grafisch_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_grafisch (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-run(fullfile(pwd, 'Funktionen', 'GUI_DBTA_2.m'))
+pfad = handles.home;
+cd([pfad '\Funktionen'])
+GUI_DBTA_2
 guidata(hObject, handles);
 
 % --- Executes on button press in pushbutton_konv_alle.
@@ -85,6 +90,7 @@ function pushbutton_konv_alle_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_konv_alle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+cd (handles.home);
 set(handles.Status_Konv,'String','Busy');
 run(fullfile(pwd, 'Funktionen', 'funk_excel2mat_alle.m'))
 set(handles.Status_Konv,'String','Bereit');
@@ -96,7 +102,10 @@ function pushbutton_konv_einzel_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_konv_einzel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+guidata(hObject, handles);
+% if pwd ~= handles.home
+%     cd ..
+% end
 set(handles.Status_Konv,'String','Busy');
 run(fullfile(pwd, 'Funktionen', 'funk_excel2mat_einzel.m'))
 set(handles.Status_Konv,'String','Bereit');
