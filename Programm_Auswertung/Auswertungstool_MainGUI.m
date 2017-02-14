@@ -22,7 +22,7 @@ function varargout = Auswertungstool_MainGUI(varargin)
 
 % Edit the above text to modify the response to help Auswertungstool_MainGUI
 
-% Last Modified by GUIDE v2.5 14-Feb-2017 11:05:55
+% Last Modified by GUIDE v2.5 09-Feb-2017 12:26:09
 
 %% Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,6 +53,7 @@ function Auswertungstool_MainGUI_OpeningFcn(hObject, eventdata, handles, varargi
 % varargin   command line arguments to Auswertungstool_MainGUI (see VARARGIN)
 
 % Choose default command line output for Auswertungstool_MainGUI
+handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -61,47 +62,49 @@ guidata(hObject, handles);
 % uiwait(handles.figure1);
 
 
-% % --- Outputs from this function are returned to the command line.
-% function varargout = Auswertungstool_MainGUI_OutputFcn(hObject, eventdata, handles) 
-% % varargout  cell array for returning output args (see VARARGOUT);
-% % hObject    handle to figure
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% 
-% % Get default command line output from handles structure
-% varargout{1} = handles.output;
-
-% 
-% % --- Executes on button press in pushbutton5.
-% function pushbutton5_Callback(hObject, eventdata, handles)
-% % hObject    handle to pushbutton5 (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% fprintf('Hallo')
-% run(fullfile(pwd,  'Funktionen', 'funk_excel2mat_einzel.m'))
-% 
-% 
-
-
-
-
-function StatusKonv_Callback(hObject, eventdata, handles)
-% hObject    handle to StatusKonv (see GCBO)
+% --- Outputs from this function are returned to the command line.
+function varargout = Auswertungstool_MainGUI_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of StatusKonv as text
-%        str2double(get(hObject,'String')) returns contents of StatusKonv as a double
+% Get default command line output from handles structure
+varargout{1} = handles.output;
 
-
-% --- Executes during object creation, after setting all properties.
-function StatusKonv_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to StatusKonv (see GCBO)
+% --- Executes on button press in pushbutton_grafisch.
+function pushbutton_grafisch_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_grafisch (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% handles    structure with handles and user data (see GUIDATA)
+fprintf('Matthis und Robi')
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+% --- Executes on button press in pushbutton_konv_alle.
+function pushbutton_konv_alle_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_konv_alle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+run(fullfile(pwd, 'Funktionen', 'funk_excel2mat_alle.m'))
+
+
+% --- Executes on button press in pushbutton_konv_einzel.
+function pushbutton_konv_einzel_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_konv_einzel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+run(fullfile(pwd, 'Funktionen', 'funk_excel2mat_einzel.m'))
+
+
+% --- Executes on button press in pushbutton_main_beenden.
+function pushbutton_main_beenden_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_main_beenden (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+close all
+
+% --- Executes on button press in pushbutton_menu3.
+function pushbutton_menu3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_menu3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+fprintf('Menü 3')
