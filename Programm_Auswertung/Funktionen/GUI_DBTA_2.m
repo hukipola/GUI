@@ -496,11 +496,17 @@ function pushbutton_aktivieren1_Callback(hObject, eventdata, handles)
 handles.listenzuordnung = 1;                        % Ändert die Variable "listenzuordnung" auf den Index der Liste 1
 
 set(handles.edit1,'String','Aktiviert');            % Ändert das Textfeld, wenn Liste 1 aktiviert wird
+set(handles.edit1,'BackgroundColor','green');
 set(handles.edit2,'String','Nicht aktiviert');      % Ändert das Textfeld von Liste 2 auf "nicht aktiviert", wenn Liste 1 aktiviert wird
+set(handles.edit2,'BackgroundColor','white');
 set(handles.edit3,'String','Nicht aktiviert');
+set(handles.edit3,'BackgroundColor','white');
 set(handles.edit4,'String','Nicht aktiviert');
+set(handles.edit4,'BackgroundColor','white');
 set(handles.edit5,'String','Nicht aktiviert');
+set(handles.edit5,'BackgroundColor','white');
 set(handles.edit6,'String','Nicht aktiviert');
+set(handles.edit6,'BackgroundColor','white');
 
 % Sobald eine andere Liste aktiviert wird, werden alte Einstellungen
 % zurückgesetzt
@@ -524,11 +530,17 @@ function pushbutton_aktivieren2_Callback(hObject, eventdata, handles)
 handles.listenzuordnung = 2;
 
 set(handles.edit1,'String','Nicht aktiviert');
+set(handles.edit1,'BackgroundColor','white');
 set(handles.edit2,'String','Aktiviert');
+set(handles.edit2,'BackgroundColor','green');
 set(handles.edit3,'String','Nicht aktiviert');
+set(handles.edit3,'BackgroundColor','white');
 set(handles.edit4,'String','Nicht aktiviert');
+set(handles.edit4,'BackgroundColor','white');
 set(handles.edit5,'String','Nicht aktiviert');
+set(handles.edit5,'BackgroundColor','white');
 set(handles.edit6,'String','Nicht aktiviert');
+set(handles.edit6,'BackgroundColor','white');
 
 cla(gca)
 reset(gca);
@@ -548,11 +560,17 @@ function pushbutton_aktivieren3_Callback(hObject, eventdata, handles)
 handles.listenzuordnung = 3;
 
 set(handles.edit1,'String','Nicht aktiviert');
+set(handles.edit1,'BackgroundColor','white');
 set(handles.edit2,'String','Nicht aktiviert');
+set(handles.edit2,'BackgroundColor','white');
 set(handles.edit3,'String','Aktiviert');
+set(handles.edit3,'BackgroundColor','green');
 set(handles.edit4,'String','Nicht aktiviert');
+set(handles.edit4,'BackgroundColor','white');
 set(handles.edit5,'String','Nicht aktiviert');
+set(handles.edit5,'BackgroundColor','white');
 set(handles.edit6,'String','Nicht aktiviert');
+set(handles.edit6,'BackgroundColor','white');
 
 cla(gca)
 reset(gca);
@@ -571,11 +589,17 @@ function pushbutton_aktivieren4_Callback(hObject, eventdata, handles)
 handles.listenzuordnung = 4;
 
 set(handles.edit1,'String','Nicht aktiviert');
+set(handles.edit1,'BackgroundColor','white');
 set(handles.edit2,'String','Nicht aktiviert');
+set(handles.edit2,'BackgroundColor','white');
 set(handles.edit3,'String','Nicht aktiviert');
+set(handles.edit3,'BackgroundColor','white');
 set(handles.edit4,'String','Aktiviert');
+set(handles.edit4,'BackgroundColor','green');
 set(handles.edit5,'String','Nicht aktiviert');
+set(handles.edit5,'BackgroundColor','white');
 set(handles.edit6,'String','Nicht aktiviert');
+set(handles.edit6,'BackgroundColor','white');
 
 cla(gca)
 reset(gca);
@@ -594,11 +618,17 @@ function pushbutton_aktivieren5_Callback(hObject, eventdata, handles)
 handles.listenzuordnung = 5;
 
 set(handles.edit1,'String','Nicht aktiviert');
+set(handles.edit1,'BackgroundColor','white');
 set(handles.edit2,'String','Nicht aktiviert');
+set(handles.edit2,'BackgroundColor','white');
 set(handles.edit3,'String','Nicht aktiviert');
+set(handles.edit3,'BackgroundColor','white');
 set(handles.edit4,'String','Nicht aktiviert');
+set(handles.edit4,'BackgroundColor','white');
 set(handles.edit5,'String','Aktiviert');
+set(handles.edit5,'BackgroundColor','green');
 set(handles.edit6,'String','Nicht aktiviert');
+set(handles.edit6,'BackgroundColor','white');
 
 cla(gca)
 reset(gca);
@@ -617,11 +647,17 @@ function pushbutton_aktivieren6_Callback(hObject, eventdata, handles)
 handles.listenzuordnung = 6;
 
 set(handles.edit1,'String','Nicht aktiviert');
+set(handles.edit1,'BackgroundColor','white');
 set(handles.edit2,'String','Nicht aktiviert');
+set(handles.edit2,'BackgroundColor','white');
 set(handles.edit3,'String','Nicht aktiviert');
+set(handles.edit3,'BackgroundColor','white');
 set(handles.edit4,'String','Nicht aktiviert');
+set(handles.edit4,'BackgroundColor','white');
 set(handles.edit5,'String','Nicht aktiviert');
+set(handles.edit5,'BackgroundColor','white');
 set(handles.edit6,'String','Aktiviert');
+set(handles.edit6,'BackgroundColor','green');
 
 cla(gca)
 reset(gca);
@@ -1183,7 +1219,7 @@ function pushbutton_liste1_speichern_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % Um für ein besseres handling zu sorgen werden die ausgewählten Dateien ausgelesen
-logVal = handles.logVal;
+Werte = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
 time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
@@ -1196,7 +1232,7 @@ inhalt = cellstr(inhalt);
 for z=1:length(inhalt)
 % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
 Index = find(strcmp(inhalt(z), logIDs));
-logVal(:,z) = logVal(:,Index);
+logVal(:,z) = Werte(:,Index);
 end
 % Beschreiben der zu speichernden Werte
 logIDs = inhalt';
@@ -1213,7 +1249,7 @@ function pushbutton_liste2_speichern_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_liste2_speichern (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-logVal = handles.logVal;
+Werte = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
 time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
@@ -1225,7 +1261,7 @@ inhalt = cellstr(inhalt);
 for z=1:length(inhalt)
 % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
 Index = find(strcmp(inhalt(z), logIDs));
-logVal(:,z) = logVal(:,Index);
+logVal(:,z) = Werte(:,Index);
 end
 logIDs = inhalt';
 Zeit = time_string;
@@ -1240,7 +1276,7 @@ function pushbutton_liste3_speichern_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_liste3_speichern (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-logVal = handles.logVal;
+Werte = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
 time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
@@ -1252,7 +1288,7 @@ inhalt = cellstr(inhalt);
 for z=1:length(inhalt)
 % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
 Index = find(strcmp(inhalt(z), logIDs));
-logVal(:,z) = logVal(:,Index);
+logVal(:,z) = Werte(:,Index);
 end
 logIDs = inhalt';
 Zeit = time_string;
@@ -1267,7 +1303,7 @@ function pushbutton_liste4_speichern_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_liste4_speichern (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-logVal = handles.logVal;
+Werte = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
 time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
@@ -1279,7 +1315,7 @@ inhalt = cellstr(inhalt);
 for z=1:length(inhalt)
 % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
 Index = find(strcmp(inhalt(z), logIDs));
-logVal(:,z) = logVal(:,Index);
+logVal(:,z) = Werte(:,Index);
 end
 logIDs = inhalt';
 Zeit = time_string;
@@ -1294,7 +1330,7 @@ function pushbutton_liste5_speichern_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_liste5_speichern (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-logVal = handles.logVal;
+Werte = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
 time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
@@ -1306,7 +1342,7 @@ inhalt = cellstr(inhalt);
 for z=1:length(inhalt)
 % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
 Index = find(strcmp(inhalt(z), logIDs));
-logVal(:,z) = logVal(:,Index);
+logVal(:,z) = Werte(:,Index);
 end
 logIDs = inhalt';
 Zeit = time_string;
@@ -1321,7 +1357,7 @@ function pushbutton_liste6_speichern_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_liste6_speichern (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-logVal = handles.logVal;
+Werte = handles.logVal;
 logIDs = handles.logIDs;
 time = handles.time;
 time_string=datestr(time,'dd:HH:MM:SS'); % Zeitvektor ist immer der gleichegrid on 
@@ -1333,7 +1369,7 @@ inhalt = cellstr(inhalt);
 for z=1:length(inhalt)
 % Auslesen, welcher Wert und damit welche Stelle ausgew?hlt wurde
 Index = find(strcmp(inhalt(z), logIDs));
-logVal(:,z) = logVal(:,Index);
+logVal(:,z) = Werte(:,Index);
 end
 logIDs = inhalt';
 Zeit = time_string;

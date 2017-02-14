@@ -92,8 +92,10 @@ function pushbutton_konv_alle_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 cd (handles.home);
 set(handles.Status_Konv,'String','Busy');
+set(handles.Status_Konv,'BackgroundColor','red');
 run(fullfile(pwd, 'Funktionen', 'funk_excel2mat_alle.m'))
 set(handles.Status_Konv,'String','Bereit');
+set(handles.Status_Konv,'BackgroundColor','white');
 guidata(hObject, handles);
 
 
@@ -107,8 +109,10 @@ guidata(hObject, handles);
 %     cd ..
 % end
 set(handles.Status_Konv,'String','Busy');
+set(handles.Status_Konv,'BackgroundColor','red');
 run(fullfile(pwd, 'Funktionen', 'funk_excel2mat_einzel.m'))
 set(handles.Status_Konv,'String','Bereit');
+set(handles.Status_Konv,'BackgroundColor','white');
 % Update handles structure
 guidata(hObject, handles);
 
